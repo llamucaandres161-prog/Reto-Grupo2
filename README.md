@@ -15,27 +15,27 @@ Restricciones:
 ## Estructura del proyecto
 
 ```
-reto/
-├── RetoRecorridos.java   # clase principal (insertar, recorridos, altura, main)
-├── Estudiante.java       # ya existe en el proyecto
-└── NodoEstudiante.java   # ya existe en el proyecto
-capturas/
-└── arbolResultado.png    # árbol dibujado a mano (resultado del reto)
+RetoRecorridos/
+├── src/
+│   ├── modelo/
+│   │   ├── Estudiante.java         # datos del estudiante
+│   │   └── NodoEstudiante.java     # nodo del árbol
+│   ├── negocio/
+│   │   └── RetoRecorridos.java     # insertar, preorden, inorden, posorden, altura
+│   └── app/
+│       └── Main.java               # ejecuta los casos de prueba
+├── capturas/
+│   └── arbolResultado.png          # árbol dibujado a mano (resultado del reto)
+└── README.md
 ```
 
-## Árbol resultante
+## 1. Árbol dibujado
 
-```
-              45
-           /      \
-         25        70
-        /  \      /  \
-      10    30   60   90
-           /       \
-         27         65
-```
+![Árbol binario de búsqueda resultante](capturas/arbolResultado.png)
 
-## Predicción (resultado esperado)
+## 2. Predicciones
+
+Las predicciones coinciden con lo que imprime el programa.
 
 | Recorrido | Orden | Resultado |
 |-----------|-------|-----------|
@@ -43,13 +43,21 @@ capturas/
 | Inorden   | izquierda, nodo, derecha | `10 25 27 30 45 60 65 70 90` |
 | Posorden  | izquierda, derecha, nodo | `10 27 30 25 65 60 90 70 45` |
 
-El inorden sale ordenado de menor a mayor: es una propiedad de todo ABB.
+El inorden sale ordenado de menor a mayor, como siempre en un ABB.
 
-## Implementación de los TODO
+## 3. Código
+
+Los tres recorridos son recursivos y solo cambia dónde va la línea `VISITA`:
+
+- **Preorden:** va antes de las llamadas a los hijos.
+- **Inorden:** va entre la llamada al hijo izquierdo y la del derecho.
+- **Posorden:** va después de las dos llamadas.
+
+Están en `src/negocio/RetoRecorridos.java` (métodos `public static`).
 
 ### Preorden
 ```java
-static void preorden(NodoEstudiante nodo, String sangria, StringBuilder salida) {
+public static void preorden(NodoEstudiante nodo, String sangria, StringBuilder salida) {
     if (nodo == null) {
         System.out.println(sangria + "null -> regresa");
         return;
@@ -65,7 +73,7 @@ static void preorden(NodoEstudiante nodo, String sangria, StringBuilder salida) 
 
 ### Inorden
 ```java
-static void inorden(NodoEstudiante nodo, String sangria, StringBuilder salida) {
+public static void inorden(NodoEstudiante nodo, String sangria, StringBuilder salida) {
     if (nodo == null) {
         System.out.println(sangria + "null -> regresa");
         return;
@@ -81,7 +89,7 @@ static void inorden(NodoEstudiante nodo, String sangria, StringBuilder salida) {
 
 ### Posorden
 ```java
-static void posorden(NodoEstudiante nodo, String sangria, StringBuilder salida) {
+public static void posorden(NodoEstudiante nodo, String sangria, StringBuilder salida) {
     if (nodo == null) {
         System.out.println(sangria + "null -> regresa");
         return;
@@ -95,9 +103,12 @@ static void posorden(NodoEstudiante nodo, String sangria, StringBuilder salida) 
 }
 ```
 
-### Altura (extra, en aristas)
+## 4. Extra: altura
+
+`altura` devuelve `-1` si el nodo es `null` y `1 + max(izq, der)` en los demás casos. Para el árbol principal da **3**.
+
 ```java
-static int altura(NodoEstudiante nodo) {
+public static int altura(NodoEstudiante nodo) {
     if (nodo == null) return -1;          // árbol vacío
     return 1 + Math.max(altura(nodo.getIzquierdo()), altura(nodo.getDerecho()));
 }
@@ -105,24 +116,12 @@ static int altura(NodoEstudiante nodo) {
 
 Una hoja devuelve `1 + max(-1, -1) = 0`, como pide el enunciado.
 
-## Cómo ejecutar
+## 5. Casos límite
 
-Desde la carpeta que contiene `reto/`:
-
-```bash
-javac reto/*.java
-java reto.RetoRecorridos
-```
-
-O ejecuta `main` desde tu IDE (NetBeans, IntelliJ, Eclipse).
-
-## Resultados
-
-### Árbol dibujado
-
-![Árbol binario de búsqueda resultante](capturas/arbolResultado.png)
-
-### Resultados esperados
+- **Árbol vacío:** no imprime nada y la altura es -1.
+- **Un solo nodo (50):** todos los recorridos dan `50`.
+- **Cadena (10, 20, 30, 40):** preorden e inorden dan `10 20 30 40` y posorden da `40 30 20 10`.
+- **Repetido (20, 30, 30, 10):** el segundo 30 se ignora, así que preorden es `20 10 30`.
 
 | Caso | Preorden | Inorden | Posorden | Altura |
 |------|----------|---------|----------|--------|
@@ -131,6 +130,17 @@ O ejecuta `main` desde tu IDE (NetBeans, IntelliJ, Eclipse).
 | Un solo nodo (50) | `50` | `50` | `50` | 0 |
 | Cadena (10, 20, 30, 40) | `10 20 30 40` | `10 20 30 40` | `40 30 20 10` | 3 |
 | Repetido (20, 30, 30, 10) | `20 10 30` | `10 20 30` | `10 30 20` | 1 |
+
+## Cómo ejecutar
+
+Desde la carpeta `RetoRecorridos/`:
+
+```bash
+javac -d out src/modelo/*.java src/negocio/*.java src/app/*.java
+java -cp out app.Main
+```
+
+O ejecuta `app.Main` desde tu IDE (NetBeans, IntelliJ, Eclipse).
 
 ## Ejemplo de traza (inicio del preorden)
 
