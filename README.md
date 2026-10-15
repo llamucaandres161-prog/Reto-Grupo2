@@ -160,5 +160,5 @@ VISITA 45
 
 ## Integrantes
 
-- ______________________________
-- ______________________________
+- Andres Llamuca
+- Jeremy Torosina
