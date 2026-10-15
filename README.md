@@ -162,3 +162,4 @@ VISITA 45
 
 - Andres Llamuca
 - Jeremy Torosina
+- Joseph Romo
